@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Configuration>
+<Configuration name="KafkaCrap" monitorInterval="30">
+
+  <Properties>
+    <Property name="logDirectory">/Users/nikko/Documents/developer/IdeaProjects/logs</Property>
+    <Property name="logLevel">DEBUG</Property>
+  </Properties>
+
+  <Appenders>
+    <RollingFile name="R" fileName="${logDirectory}/spring-kafka.log" filePattern="${logDirectory}/spring-kafka-%i.log.gz" append="false"
+      bufferedIO="true">
+      <PatternLayout pattern="[%d{MM/dd/yy HH:mm:ss:SSS z}] %p %c:%L - %m%n" />
+      <Policies>
+        <SizeBasedTriggeringPolicy size="50MB" />
+      </Policies>
+      <DefaultRolloverStrategy max="4" />
+    </RollingFile>
+
+    <RollingFile name="consumerLog" fileName="${logDirectory}/spring-kafka-consumer.log" filePattern="${logDirectory}/spring-kafka-consumer-%i.log.gz" append="false"
+                 bufferedIO="true">
+      <PatternLayout pattern="[%d{MM/dd/yy HH:mm:ss:SSS z}] %p %c:%L - %m%n" />
+      <Policies>
+        <SizeBasedTriggeringPolicy size="50MB" />
+      </Policies>
+      <DefaultRolloverStrategy max="4" />
+    </RollingFile>
+
+    <Async name="ASYNC-R">
+      <AppenderRef ref="R" />
+    </Async>
+    <Async name="ASYNC-CONSUMER">
+      <AppenderRef ref="consumerLog" />
+    </Async>
+  </Appenders>
+
+  <Loggers>
+    <Logger name="com" level="${logLevel}" />
+    <Logger name="org" level="${logLevel}" />
+
+    <Logger name="com.demo.kafka.DemoConsumer" level="${logLevel}">
+      <AppenderRef ref="ASYNC-CONSUMER" />
+    </Logger>
+
+    <Logger name="com.demo.kafka.DemoConsumerClassLevel" level="${logLevel}">
+      <AppenderRef ref="ASYNC-CONSUMER" />
+    </Logger>
+
+    <Root level="${logLevel}">
+      <AppenderRef ref="ASYNC-R" />
+    </Root>
+  </Loggers>
+
+</Configuration>
